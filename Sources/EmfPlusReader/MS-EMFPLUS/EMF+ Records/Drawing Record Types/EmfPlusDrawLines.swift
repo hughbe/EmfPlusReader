@@ -100,9 +100,10 @@ public struct EmfPlusDrawLines {
         public let objectID: UInt8
         public let reserved1: UInt8
         public let relative: Bool
+        public let reserved2: Bool
         public let drawExtraLineBetweenLastAndFirst: Bool
         public let compressed: Bool
-        public let reserved2: Bool
+        public let reserved3: Bool
         
         public init(dataStream: inout DataStream) throws {
             var flags: BitFieldReader<UInt16> = try dataStream.readBits(endianess: .littleEndian)
@@ -126,6 +127,9 @@ public struct EmfPlusDrawLines {
             /// Note: If this flag is set, the C flag (above) is undefined and MUST be ignored.<22>
             self.relative = flags.readBit()
             
+            /// X (1 bit): Reserved and MUST be ignored.
+            self.reserved2 = flags.readBit()
+            
             /// L (1 bit): This bit indicates whether to draw an extra line between the last point and the first point, to close the shape.
             self.drawExtraLineBetweenLastAndFirst = flags.readBit()
             
@@ -135,7 +139,7 @@ public struct EmfPlusDrawLines {
             self.compressed = flags.readBit()
             
             /// X (1 bit): Reserved and MUST be ignored.
-            self.reserved2 = flags.readBit()
+            self.reserved3 = flags.readBit()
         }
     }
 }

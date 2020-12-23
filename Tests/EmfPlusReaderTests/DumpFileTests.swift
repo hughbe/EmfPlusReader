@@ -1,6 +1,8 @@
 import XCTest
 import DataStream
+import Foundation
 import EmfReader
+import WmfReader
 @testable import EmfPlusReader
 
 final class DumpFileTests: XCTestCase {
@@ -66,6 +68,38 @@ final class DumpFileTests: XCTestCase {
                 if case let .object(object) = record {
                     if case .continues = object.objectData {
                         return .continue
+                    }
+                    if case let .image(image) = object.objectData,
+                       case let .metafile(metafile) = image.imageData {
+                        switch metafile.type {
+                        case .wmf, .wmfPlaceable:
+                            let file = try WmfFile(data: Data(metafile.metafileData))
+                            try file.enumerateRecords { record in
+                                print(record)
+                                return .continue
+                            }
+                        case .emf, .emfPlusDual, .emfPlusOnly:
+                            let file = try EmfFile(data: Data(metafile.metafileData))
+                            var emfPlusData = Data()
+                            try file.enumerateRecords { record in
+                                print(record)
+                                guard case let .comment(comment) = record,
+                                      case let .commentEmfPlus(emfPlusComment) = comment else {
+                                    return .continue
+                                }
+
+                                emfPlusData += emfPlusComment.emfPlusRecords
+                                return .continue
+                            }
+                            
+                            if emfPlusData.count > 0 {
+                                let emfPlusFile = try EmfPlusFile(data: emfPlusData)
+                                try emfPlusFile.enumerateRecords { record in
+                                    print(record)
+                                    return .continue
+                                }
+                            }
+                        }
                     }
                 }
 
