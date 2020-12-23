@@ -50,13 +50,10 @@ final class DumpFileTests: XCTestCase {
         for (name, fileExtension) in files {
             let data = try getData(name: name, fileExtension: fileExtension)
             let file = try EmfFile(data: data)
-            var emfPlusData: [UInt8] = []
+            var emfPlusData = Data()
             try file.enumerateRecords { record in
-                guard case let .comment(comment) = record else {
-                    return .continue
-                }
-                
-                guard case let .commentEmfPlus(emfPlusComment) = comment else {
+                guard case let .comment(comment) = record,
+                      case let .commentEmfPlus(emfPlusComment) = comment else {
                     return .continue
                 }
 
@@ -64,8 +61,7 @@ final class DumpFileTests: XCTestCase {
                 return .continue
             }
             
-            var emfPlusDataStream = DataStream(emfPlusData)
-            let emfPlusFile = try EmfPlusFile(dataStream: &emfPlusDataStream)
+            let emfPlusFile = try EmfPlusFile(data: emfPlusData)
             try emfPlusFile.enumerateRecords { record in
                 if case let .object(object) = record {
                     if case .continues = object.objectData {

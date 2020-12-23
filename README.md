@@ -10,12 +10,31 @@ Add the following line to your project's SwiftPM dependencies:
 ```
 
 ```swift
+import EmfReader
 import EmfPlusReader
 
 let data = Data(contentsOfFile: "<path-to-file>.emf")!
 let file = try EmfFile(data: data)
+var emfPlusData = Data()
 try file.enumerateRecords { record in
-    print("Record: \(record)")
+    guard case let .comment(comment) = record,
+          case let .commentEmfPlus(emfPlusComment) = comment else {
+        return .continue
+    }
+
+    emfPlusData += emfPlusComment.emfPlusRecords
+    return .continue
+}
+
+let emfPlusFile = try EmfPlusFile(data: emfPlusData)
+try emfPlusFile.enumerateRecords { record in
+    if case let .object(object) = record {
+        if case .continues = object.objectData {
+            return .continue
+        }
+    }
+
+    print(record)
     return .continue
 }
 ```
