@@ -1,6 +1,6 @@
 # EmfPlusReader
 
-Swift definitions for structures, enumerations and functions defined in [MS-EMFPLUS](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-emfplus/)
+Swift definitions for structures, enumerations and functions defined in [MS-EMFPLUS](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-emfplus/).
 
 ## Example Usage
 
