@@ -9,10 +9,10 @@ import DataStream
 
 /// [MS-EMFPLUS] 2.3.4.15 EmfPlusFillClosedCurve Record
 /// The EmfPlusFillClosedCurve record specifies filling the interior of a closed cardinal spline.
-/// A "winding" fill operation fills areas according to the "even-odd parity" rule. According to this rule, a test point can be determined to
+/// An "alternate" fill operation fills areas according to the "even-odd parity" rule. According to this rule, a test point can be determined to
 /// be inside or outside a closed curve as follows: Draw a line from the test point to a point that is distant from the curve. If that line
 /// crosses the curve an odd number of times, the test point is inside the curve; otherwise, the test point is outside the curve.
-/// An "alternate" fill operation fills areas according to the "non-zero" rule. According to this rule, a test point can be determined to be
+/// A "winding" fill operation fills areas according to the "non-zero" rule. According to this rule, a test point can be determined to be
 /// inside or outside a closed curve as follows: Draw a line from a test point to a point that is distant from the curve. Count the number
 /// of times the curve crosses the test line from left to right, and count the number of times the curve crosses the test line from right to left.
 /// If those two numbers are the same, the test point is outside the curve; otherwise, the test point is inside the curve.
